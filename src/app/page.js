@@ -36,7 +36,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col items-center justify-center"> 
         {/*show more button*/}
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-light py-1 px-8 rounded m-4 rounded-lg" style={detailsButtonStyle}>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-light py-1 px-8 rounded m-4 rounded-lg" style={detailsButtonStyle}>
           VIŠE
         </button>
       </div>

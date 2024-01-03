@@ -48,7 +48,7 @@ const Event = ({ title, date, location, description, imageUrl }) => {
 
       <Link href="/event_details">
         <button
-          class="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded mr-4 rounded-lg"
+          className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded mr-4 rounded-lg"
           style={detailsButtonStyle}
         >
           {description} DETALJI
