@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Comment from "@/components/comment";
+import UserComment from "@/components/user_comment";
 
 const EventDetails = ({ title, date, location, description, imageUrl }) => {
   const eventCardStyle = {
@@ -39,7 +41,7 @@ const EventDetails = ({ title, date, location, description, imageUrl }) => {
             </div>
           </div>
 
-          <hr className="h-px my-8  border-0 bg-gray-700" />
+          <hr className="h-0.5 my-8  border-0 bg-gray-700" />
 
           <div className="flex items-center justify-center">
             <p className="text-center text-black my-2">Opis događaja</p>
@@ -68,8 +70,15 @@ const EventDetails = ({ title, date, location, description, imageUrl }) => {
               </label>
             </div>
 
-            <div className="mr-8">
-              <p className="text-black text-lg text-right">Broj:</p>
+            <div className="mr-8 flex flex-row">
+              <Image
+                className="rounded-md mr-4"
+                src="/people_icon.png"
+                alt="Profile Icon"
+                width={25}
+                height={25}
+              />
+              <p className="text-black text-lg text-right">Dolazi: 100</p>
             </div>
           </div>
         </div>
@@ -82,6 +91,25 @@ const EventDetails = ({ title, date, location, description, imageUrl }) => {
             width={350}
             height={600}
           />
+        </div>
+      </div>
+      <div className="ml-8">
+        <p className="text-left text-black my-2 ml-10">Komentari</p>
+        <div className="flex-col justify-center">
+            <UserComment />
+          <Comment />
+          <Comment />
+          <Comment />
+
+          <Comment />
+
+          <Comment />
+
+          <Comment />
+
+          <Comment />
+
+
         </div>
       </div>
     </>
