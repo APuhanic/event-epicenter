@@ -137,14 +137,16 @@ const Register = ({ title, date, location, description, imageUrl }) => {
 
         <p className="text-black text-left my-2 text-center">Datum rođenja:</p>
 
-        <div className="flex flex-row  justify-center items-center">
-          <input
-            type="date"
-            name="email"
-            className="form-input text-black w-full  mb-6  placeholder-white border-none rounded-lg w-1/5"
-            placeholder="Mjesec"
-            style={inputStyle}
-          />
+        <div className="flex justify-center items center ">
+          <div className="w-1/5 ">
+            <input
+              type="date"
+              name="email"
+              className="form-input text-black w-full  mb-6  placeholder-white border-none rounded-lg "
+              placeholder="Mjesec"
+              style={inputStyle}
+            />
+          </div>
         </div>
 
         <div className="flex justify-center">

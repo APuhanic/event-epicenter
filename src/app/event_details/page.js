@@ -11,6 +11,10 @@ const EventDetails = ({ title, date, location, description, imageUrl }) => {
     padding: "0.75rem",
     textAlign: "center",
   };
+  const { user, setUser, isLoading, setIsLoading } = useAuth();
+
+  
+
 
   return (
     <>

@@ -12,16 +12,32 @@ export default function Home() {
         <div className="flex-1"></div>
 
         <Link href="/datumi">
-          <div className="text-medium font-semibold text-center text-black mr-4">DOGAĐAJI</div>
+          <div className="text-medium font-semibold text-center text-black mr-4">
+            DOGAĐAJI
+          </div>
         </Link>
 
         <Link href="/datumi">
-          <div className="text-medium font-semibold text-center text-black mr-4">DATUMI</div>
+          <div className="text-medium font-semibold text-center text-black mr-4">
+            DATUMI
+          </div>
         </Link>
+
+        <div className="flexbox">
+          <div className="search">
+            <div>
+              <input
+                type="text"
+                placeholder="Search . . ."
+                required
+                className="ring-0"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex-1"></div>
 
-        {/* Profile Button */}
         <Link href="/profile">
           <Image
             src="/profile_icon.png"
@@ -34,9 +50,11 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center">
         <Event />
       </div>
-      <div className="flex flex-col items-center justify-center"> 
-        {/*show more button*/}
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-light py-1 px-8 rounded m-4 rounded-lg" style={detailsButtonStyle}>
+      <div className="flex flex-col items-center justify-center">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-light py-1 px-8 rounded m-4 rounded-lg"
+          style={detailsButtonStyle}
+        >
           VIŠE
         </button>
       </div>
