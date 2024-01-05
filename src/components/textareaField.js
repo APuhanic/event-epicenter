@@ -7,11 +7,11 @@ const TextareaField = ({ label, name, value, onChange }) => {
   };
 
   return (
-    <div className="flex-col w-3/5">
+    <div className="flex-col">
       <p className="text-black text-left my-2">{label}:</p>
       <textarea
         name={name}
-        rows="5"
+        rows="3"
         className="form-textarea text-black w-full mb-6 placeholder-white border-none rounded-lg"
         placeholder={`${label}...`}
         style={inputStyle}

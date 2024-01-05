@@ -7,7 +7,7 @@ const DateField = ({ label, name, value, onChange }) => {
   };
 
   return (
-    <div className="flex-col w-3/7 mr-10">
+    <div className="flex-col w-3/7 ">
       <p className="text-black text-left my-2 text-center">{label}:</p>
       <input
         type="datetime-local"

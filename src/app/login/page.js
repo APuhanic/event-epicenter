@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
 import React from "react";
 import Link from "next/link";
-import { useAuth } from '@/contexts/authContext';
-import { useState } from "react";
+import { useAuth } from "@/contexts/authContext";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { LOGIN_ENDPOINT } from "@/api/endpoints";
 
-
-const Login = ({  }) => {
+const Login = ({}) => {
   const eventCardStyle = {
     backgroundColor: "rgb(217, 217, 217)",
   };
@@ -20,39 +21,38 @@ const Login = ({  }) => {
     backgroundColor: "rgb(92,156,176)",
   };
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("a@a.com");
+  const [password, setPassword] = useState("12345678");
+  const router = useRouter();
 
-  const { userToken, setuserToken, isLoading, setIsLoading } = useAuth();
+  const { userToken, setuserToken, isLoading, setIsLoading, setUserID } =
+    useAuth();
 
-  
   const handleLogin = async () => {
-    const loginEndpoint = 'http://localhost:5189/login';
-
-    try{
+    try {
       const temp = JSON.stringify({ email, password });
-      console.log('temp', temp);
-      const response = await fetch(loginEndpoint, {
-        method: 'POST',
+      console.log("temp", temp);
+      const response = await fetch(LOGIN_ENDPOINT, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
+
         body: JSON.stringify({ email, password }),
       });
 
-      if(response.ok){
-        const { token } = await response.json();
-        setuserToken(token);
-        console.log('token', token);
+      if (response.ok) {
+        const data = await response.json();
+        setuserToken(data.accessToken);
+        setUserID(data.userId);
+        router.replace("/profile");
       }
-    }catch (error) {
-      console.error('Error during login:', error);
+    } catch (error) {
+      console.error("Error during login:", error);
     } finally {
       setIsLoading(false);
     }
-
-  }
-
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -68,7 +68,7 @@ const Login = ({  }) => {
           className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
           placeholder="Upišite e-mail"
           style={inputStyle}
-          onChange = {(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <p className="text-black text-left my-2">Lozinka:</p>
         <input
@@ -77,7 +77,7 @@ const Login = ({  }) => {
           className="form-input text-black w-full mb-20 rounded-lg placeholder-white border-none"
           placeholder="Upišite lozinku"
           style={inputStyle}
-          onChange = {(e) => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <div className="flex justify-center">
           <button

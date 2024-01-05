@@ -7,7 +7,7 @@ const SelectField = ({ label, options, value, onChange }) => {
   };
 
   return (
-    <div className="flex-col mr-20">
+    <div className="flex-col">
       <p className="text-black my-2">{label}:</p>
       <select
         className="form-select text-black rounded-lg outline-none"

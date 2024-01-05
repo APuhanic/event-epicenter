@@ -6,7 +6,7 @@ const InputField = ({ label, type, name, placeholder, value, onChange }) => {
     color: "white",
   };
   return (
-    <div className="flex-col mx-5">
+    <div className="flex-col ">
       <p className="text-black text-left my-2">{label}:</p>
       <input
         type={type}

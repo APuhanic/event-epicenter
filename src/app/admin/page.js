@@ -50,12 +50,13 @@ const Admin = ({ title, date, location, description, imageUrl }) => {
       >
         <p className="text-black text-center">Admin</p>
 
-        <div className="flex justify-center">
+        <div className="flex justify-between">
           <InputField
             name="eventName"
             label="Naziv događaja:"
             placeholder="Upišite naziv događaja..."
             type={"text"}
+            className="w-full"
           />
 
           <SelectField
@@ -68,52 +69,42 @@ const Admin = ({ title, date, location, description, imageUrl }) => {
             value={selectedPreference}
             onChange={handlePreferenceChange}
           />
-        </div>
 
-        <div className="flex justify-center">
-          <InputField
-            name="eventName"
-            label="Grad"
-            placeholder="Upišite naziv grada..."
-            type={"text"}
-          />
-
-          <div className="flex-col">
-            <InputField
-              name="eventName"
-              label="Adresa"
-              placeholder="Upišite adresu..."
-              type={"text"}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center ">
           <DateField
             label="Datum događanja"
             name="eventDate"
             value={eventDate}
             onChange={handleEventDateChange}
           />
-
-          <div className="flex-col w-3/7">
-            <InputField
-              name="eventName"
-              label="Cijena"
-              placeholder="Upišite cijenu..."
-              type={"number"}
-            />
-          </div>
         </div>
 
-        <div className="flex justify-center">
-          <TextareaField
-            label="Opis događaja"
-            name="eventDescription"
-            value={eventDescription}
-            onChange={handleDescriptionChange}
-          />
-        </div>
+        <InputField
+          name="eventName"
+          label="Grad"
+          placeholder="Upišite naziv grada..."
+          type={"text"}
+        />
+
+        <InputField
+          name="eventName"
+          label="Adresa"
+          placeholder="Upišite adresu..."
+          type={"text"}
+        />
+
+        <InputField
+          name="eventName"
+          label="Cijena"
+          placeholder="Upišite cijenu..."
+          type={"number"}
+        />
+
+        <TextareaField
+          label="Opis događaja"
+          name="eventDescription"
+          value={eventDescription}
+          onChange={handleDescriptionChange}
+        />
 
         <div className="flex justify-center ">
           <div className="flex-col w-3/5">
