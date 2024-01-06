@@ -6,20 +6,10 @@ import { useAuth } from "@/contexts/authContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LOGIN_ENDPOINT } from "@/api/endpoints";
+import { eventCardStyle, inputStyle, detailsButtonStyle } from "../styles";
 
 const Login = ({}) => {
-  const eventCardStyle = {
-    backgroundColor: "rgb(217, 217, 217)",
-  };
 
-  const inputStyle = {
-    backgroundColor: "rgb(181, 175, 175)",
-    color: "white",
-  };
-
-  const detailsButtonStyle = {
-    backgroundColor: "rgb(92,156,176)",
-  };
 
   const [email, setEmail] = useState("a@a.com");
   const [password, setPassword] = useState("12345678");

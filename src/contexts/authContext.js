@@ -1,5 +1,4 @@
 "use client";
-
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -15,6 +14,7 @@ export const AuthProvider = ({ children }) => {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem("userToken");
     }
+    console.log("logout");
     setuserToken(null);
   };
 
