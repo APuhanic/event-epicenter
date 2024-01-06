@@ -2,49 +2,41 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import Comment from "@/components/comment";
-import UserComment from "@/components/user_comment";
 import { useAuth } from "@/contexts/authContext";
 import { useState, useEffect } from "react";
 import { USER_ENDPOINT } from "@/api/endpoints";
 
 const Profile = ({ title, date, location, description, imageUrl }) => {
-  const eventCardStyle = {
-    backgroundColor: "rgb(217, 217, 217)",
-    color: "white",
-    padding: "0.75rem",
-    textAlign: "center",
-  };
+
 
   const { userToken, getTokenFromLocalStorage, getUserIDFromLocalStorage } =
     useAuth();
-
-  React.useEffect(() => {
-    const token = getTokenFromLocalStorage();
-    const userID = getUserIDFromLocalStorage();
-  }, [userToken]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userID = getUserIDFromLocalStorage();
         const token = getTokenFromLocalStorage();
-        console.log("userID", userID);
-        console.log(token);
         if (userID && token) {
-          const response = await fetch(`${USER_ENDPOINT}/${userID}`, {
+          const url = `${USER_ENDPOINT}/${userID}`;
+          console.log("url", url);
+          const response = await fetch(url, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
+            credentials: "include",
           });
-            console.log("response", response);
+
+          console.log("response", response);
+
           if (response.ok) {
             const data = await response.json();
             setUserData(data);
-          } 
+          } else {
+            console.error("Error fetching user data:", response.status);
+          }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -52,7 +44,7 @@ const Profile = ({ title, date, location, description, imageUrl }) => {
     };
 
     fetchUserData();
-  }, [getUserIDFromLocalStorage, getTokenFromLocalStorage]);
+  }, []);
 
   return (
     <>
