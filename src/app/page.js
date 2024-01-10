@@ -1,10 +1,53 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Event from "@/components/event";
+import { useEffect, useState } from "react";
+import { EVENTS_ENDPOINT } from "@/api/endpoints";
+import { useAuth } from "@/contexts/authContext";
+import EventList from "@/components/eventList";
 
 export default function Home() {
   const detailsButtonStyle = {
     backgroundColor: "rgb(92,156,176)",
+  };
+
+  const { getTokenFromLocalStorage } = useAuth();
+
+  const userToken = getTokenFromLocalStorage();
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const url = `${EVENTS_ENDPOINT}`;
+      console.log("url", url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("response", response);
+        setEvents(data);
+        console.log("events", data);
+      } else {
+        console.error("Error fetching events", response.status);
+        console.error("Error fetching events", response.body);
+        console.error("Error fetching events", response);
+
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   };
   return (
     <>
@@ -48,7 +91,7 @@ export default function Home() {
         </Link>
       </div>
       <div className="flex flex-col items-center justify-center">
-        <Event />
+        <EventList events={events} />
       </div>
       <div className="flex flex-col items-center justify-center">
         <button

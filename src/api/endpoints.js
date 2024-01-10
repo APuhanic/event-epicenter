@@ -1,9 +1,12 @@
-const BASE_URL = "http://localhost:5189";
+const BASE_URL = "https://localhost:7267";
 
 export const LOGIN_ENDPOINT = `${BASE_URL}/login`;
+export const LOGOUT_ENDPOINT = `${BASE_URL}/logout`;
+
 export const REGISTER_ENDPOINT = `${BASE_URL}/register`;
 
 export const EVENTS_ENDPOINT = `${BASE_URL}/events`;
-export const EVENT_ENDPOINT = `${BASE_URL}/event`;
+export const EVENT_IMAGE_ENDPOINT = `${BASE_URL}/events/image`;
+
 export const USER_ENDPOINT = `${BASE_URL}/users`;
 export const USER_PROFILE_ENDPOINT = `${BASE_URL}/profile`;

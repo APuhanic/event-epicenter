@@ -1,19 +1,20 @@
 import React from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { eventCardStyle, detailsButtonStyle } from "@/app/styles";
 
-const Event = ({ title, date, location, description, imageUrl }) => {
-  const eventCardStyle = {
-    backgroundColor: "rgb(217, 217, 217)",
-    color: "white",
-    padding: "0.75rem",
-    textAlign: "center",
-  };
+const Event = ({event }) => {
 
-  const detailsButtonStyle = {
-    backgroundColor: "rgb(92,156,176)",
-  };
+  const eventDate = new Date(event.date);
 
+  const formattedDate = `${eventDate.getFullYear()}-${eventDate.getMonth() + 1}-${eventDate.getDate()}`;
+  const formattedTime = `${eventDate.getHours()}:${eventDate.getMinutes()}`;
+
+  const router = useRouter();
+
+  const handleDetailsClick = () => {
+    router.push(`/event_details/${event.id}`);
+  }
+  
   return (
     <div
       className="flex flex-row items-center bg-white p-6 m-6 rounded-lg  w-3/4 border-none"
@@ -21,39 +22,31 @@ const Event = ({ title, date, location, description, imageUrl }) => {
     >
       <div className="ml-4">
         {/* Event Image */}
-        {imageUrl && (
+        {event.imagePath && (
           <img
-            src={imageUrl}
-            alt={`${title} Image`}
+            src={event.imagePath}
             className="w-24 h-24 object-cover rounded-md"
           />
         )}
-        <Image
-          className=" rounded-md"
-          src="/placeholder.png"
-          alt="Profile Icon"
-          width={185}
-          height={127}
-        />
+
       </div>
 
       <div className="m-4">
-        <p className="text-black text-lg">{date} Date</p>
-        <p className="text-black text-lg mt-6">{date} Time</p>
+        <p className="text-black text-lg">{formattedDate} </p>
+        <p className="text-black text-lg mt-6">{formattedTime} Time</p>
       </div>
       <div className="text-black text-lg flex-1"></div>
 
-      <p className="text-black text-lg mr">{title} Title</p>
+      <p className="text-black text-lg mr">{event.name}</p>
       <div className="flex-1"></div>
 
-      <Link href="/event_details">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded mr-4 rounded-lg"
           style={detailsButtonStyle}
+          onClick={handleDetailsClick}
         >
-          {description} DETALJI
+           DETALJI
         </button>
-      </Link>
     </div>
   );
 };

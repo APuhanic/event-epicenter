@@ -11,11 +11,12 @@ import { eventCardStyle, inputStyle, detailsButtonStyle } from "../styles";
 const Login = ({}) => {
 
 
-  const [email, setEmail] = useState("a@a.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("admin@gmail.com");
+  const [password, setPassword] = useState("123456");
+  
   const router = useRouter();
 
-  const { userToken, setuserToken, isLoading, setIsLoading, setUserID } =
+  const { userToken, setUserToken, isLoading, setIsLoading, setUserID } =
     useAuth();
 
   const handleLogin = async () => {
@@ -33,7 +34,7 @@ const Login = ({}) => {
 
       if (response.ok) {
         const data = await response.json();
-        setuserToken(data.accessToken);
+        setUserToken(data.accessToken);
         setUserID(data.userId);
         router.replace("/profile");
       }

@@ -1,21 +1,76 @@
+"use client";
 import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import Comment from "@/components/comment";
-import UserComment from "@/components/user_comment";
+import { REGISTER_ENDPOINT } from "@/api/endpoints";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { eventCardStyle, inputStyle, detailsButtonStyle } from "../styles";
 
 const Register = ({ title, date, location, description, imageUrl }) => {
-  const eventCardStyle = {
-    backgroundColor: "rgb(217, 217, 217)",
-  };
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailConfirmation, setEmailConfirmation] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [city, setCity] = useState("");
+  const router = useRouter();
 
-  const inputStyle = {
-    backgroundColor: "rgb(181, 175, 175)",
-    color: "white",
-  };
 
-  const detailsButtonStyle = {
-    backgroundColor: "rgb(92,156,176)",
+  const handleRegister = async () => {
+    try {
+      const url = `${REGISTER_ENDPOINT}`;
+
+      console.log("url", url);
+      const eventTypeIds = [];
+
+      if (document.getElementById("music").checked) {
+        eventTypeIds.push("music");
+      }
+      if (document.getElementById("sport").checked) {
+        eventTypeIds.push("sport");
+      }
+      if (document.getElementById("culture").checked) {
+        eventTypeIds.push("culture");
+      }
+      const temp = JSON.stringify({
+        email,
+        password,
+        firstName,
+        lastName,
+        dob: new Date(dateOfBirth).toISOString(),
+        eventTypeIds,
+        city
+      });
+
+      console.log("temp", temp);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: temp,
+
+      });
+      console.log('Response Status:', response.status);
+      console.log('Response Headers:', response.headers);
+      const responseData = await response;
+      console.log('Response Data:', responseData);
+      if (response.ok) {
+        const data = await response;
+        console.log("response", response);
+        console.log("events", data);
+        router.replace("/login");
+
+      } else {
+        console.error("Error fetching ", response.status);
+
+        
+      }
+    } catch (error) {
+      console.error( error);
+
+    }
   };
 
   return (
@@ -35,6 +90,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
               placeholder="Upišite ime"
               style={inputStyle}
+              onChange={(e) => setfirstName(e.target.value)}
             />
           </div>
 
@@ -46,6 +102,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               className="form-input text-black w-full  rounded-lg placeholder-white border-none"
               placeholder="Upišite prezime"
               style={inputStyle}
+              onChange={(e) => setLastName(e.target.value)}
             />
           </div>
         </div>
@@ -94,6 +151,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
               placeholder="Upišite e-mail..."
               style={inputStyle}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -107,6 +165,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               className="form-input text-black w-full  rounded-lg placeholder-white border-none"
               placeholder="Upišite e-mail..."
               style={inputStyle}
+              onChange={(e) => setEmailConfirmation(e.target.value)}
             />
           </div>
         </div>
@@ -115,37 +174,56 @@ const Register = ({ title, date, location, description, imageUrl }) => {
           <div className="flex-col mr-10">
             <p className="text-black text-left my-2">Lozinka:</p>
             <input
-              type="text"
+              type="password"
               name="email"
               className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
               placeholder="Upišite lozninku..."
               style={inputStyle}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
           <div className="flex-col">
             <p className="text-black text-left my-2">Potvrdite lozinku:</p>
             <input
-              type="text"
+              type="password"
               name="password"
               className="form-input text-black w-full  rounded-lg placeholder-white border-none"
               placeholder="Upišite lozinku..."
               style={inputStyle}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
             />
           </div>
         </div>
 
-        <p className="text-black text-left my-2 text-center">Datum rođenja:</p>
-
-        <div className="flex justify-center items center ">
-          <div className="w-1/5 ">
+        <div className="flex justify-center">
+          <div className="flex-col mr-10 w-1/5">
+            <p className="text-black text-left my-2">Grad:</p>
             <input
-              type="date"
+              type="text"
               name="email"
-              className="form-input text-black w-full  mb-6  placeholder-white border-none rounded-lg "
-              placeholder="Mjesec"
+              className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
+              placeholder="Upišite grad"
               style={inputStyle}
+              onChange={(e) => setCity(e.target.value)}
             />
+          </div>
+
+          <div className="flex-col">
+            <p className="text-black text-left my-2 text-center">
+              Datum rođenja:
+            </p>
+
+            <div className="flex justify-center items center ">
+              <input
+                type="date"
+                name="email"
+                className="form-input text-black w-full  mb-6  placeholder-white border-none rounded-lg "
+                placeholder="Mjesec"
+                style={inputStyle}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
@@ -153,6 +231,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded rounded-lg "
             style={detailsButtonStyle}
+            onClick={handleRegister}
           >
             Registracija
           </button>

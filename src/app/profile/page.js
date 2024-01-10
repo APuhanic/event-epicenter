@@ -1,34 +1,46 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { useAuth } from "@/contexts/authContext";
 import { useState, useEffect } from "react";
 import { USER_ENDPOINT } from "@/api/endpoints";
 import { detailsButtonStyle } from "../styles";
+import { useRouter } from "next/navigation";
 
-const Profile = ({ title, date, location, description, imageUrl }) => {
-
-  const { getTokenFromLocalStorage, getUserIDFromLocalStorage, logout } = useAuth();
+const Profile = ({}) => {
+  const {
+    getTokenFromLocalStorage,
+    getUserIDFromLocalStorage,
+    logout,
+    isLoggedIn,
+  } = useAuth();
 
   const [userData, setUserData] = useState(null);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  const router = useRouter();
+
   const userID = getUserIDFromLocalStorage();
   const userToken = getTokenFromLocalStorage();
 
   useEffect(() => {
-    if(userID == null || userToken == null){
-      
+    setIsUserLoggedIn(isLoggedIn());
+    console.log("isUserLoggedIn:", isLoggedIn());
+    if (isLoggedIn() === false) {
+      router.replace("/login");
     }
     fetchUserData();
   }, []);
 
-  const handleLogout = async () =>{
-    logout();
-  }
+  const handleLogout = async () => {
+    const logoutResponse = await logout();
+    if (logoutResponse.ok) {
+      router.replace("/login");
+    }
+  };
 
   const fetchUserData = async () => {
     try {
-
       if (userID && userToken) {
         const url = `${USER_ENDPOINT}/${userID}`;
         console.log("url", url);
@@ -39,12 +51,11 @@ const Profile = ({ title, date, location, description, imageUrl }) => {
             Authorization: `Bearer ${userToken}`,
           },
           credentials: "include",
-          
         });
 
         if (response.ok) {
           const data = await response.json();
-          console.log("response", response);
+          console.log("response", data);
           setUserData(data);
         } else {
           console.error("Error fetching user data:", response.status);
@@ -69,6 +80,23 @@ const Profile = ({ title, date, location, description, imageUrl }) => {
           <p className="text-black text-lg">
             Prezime: {userData ? userData.lastName : ""}
           </p>
+          <p className="text-black text-lg">
+            Grad: {userData ? userData.city : ""}
+          </p>
+          <p className="text-black text-lg">
+            Datum rođenja: {userData ? userData.dob : ""}
+          </p>
+          {/* Displaying eventTypeIds */}
+          <div className="text-black text-lg">
+            EventTypeIds:
+            {userData &&
+              userData.eventTypeIds &&
+              userData.eventTypeIds.map((typeId, index) => (
+                <span key={index}>
+                  {index > 0 && ", "} {typeId}
+                </span>
+              ))}
+          </div>
         </div>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded mr-4 rounded-lg "
