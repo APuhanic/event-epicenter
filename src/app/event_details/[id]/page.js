@@ -48,36 +48,51 @@ const EventDetails = ({ params }) => {
       <div className="flex p-20 ">
         <div className="flex-1">
           <div className="flex flex-row justify-between">
-            <p className="text-black text-lg font-bold">
-              {eventDetails?.name}
-            </p>
+            <p className="text-black text-4xl font-bold">{eventDetails?.name}</p>
 
             <div className="mr-8">
               <p className="text-black text-lg text-right font-bold">
                 Vrsta događaja:
               </p>
-              <p className="text-black text-lg text-right font-bold">{eventDetails?.description}</p>
+              <p className="text-black text-lg text-right">
+                {eventDetails?.eventTypeId}
+              </p>
             </div>
           </div>
 
-          <p className="text-black text-lg">Datum: {eventDetails?.date} </p>
-          <p className="text-black text-lg mb-6">Time: {eventDetails?.date} </p>
+          <p className="text-black text-lg ">
+            <span className="font-bold">Datum: </span>
+            {eventDetails?.date &&
+              new Date(eventDetails.date).toLocaleDateString()}{" "}
+          </p>
+          <p className="text-black text-lg mb-6">
+            <span className="font-bold">Vrijeme: </span>
+            {eventDetails?.date &&
+              new Date(eventDetails.date).toLocaleTimeString()}{" "}
+          </p>
 
           <div className="flex flex-row justify-between">
             <div>
               <p className="text-black text-lg">Dvorana Gradski vrt, Osijek</p>
-              <p className="text-black text-lg">Adresa: {eventDetails?.address}</p>
+              <p className="text-black text-lg">
+                <span className="font-bold">Adresa: </span>
+                {eventDetails?.address}
+              </p>
             </div>
             <div className="mr-8">
-              <p className="text-black text-lg text-right">Ulaz:</p>
-              <p className="text-black text-lg text-right">{eventDetails?.price} €</p>
+              <p className="text-black text-lg text-right font-bold">Ulaz:</p>
+              <p className="text-black text-lg text-right">
+                {eventDetails?.price} €
+              </p>
             </div>
           </div>
 
           <hr className="h-0.5 my-8  border-0 bg-gray-700" />
 
           <div className="flex items-center justify-center">
-            <p className="text-center text-black my-2">{eventDetails?.description}</p>
+            <p className="text-center text-black my-2">
+              {eventDetails?.description}
+            </p>
           </div>
 
           <hr className="h-0.5 my-8  border-0 bg-gray-700" />
@@ -115,7 +130,9 @@ const EventDetails = ({ params }) => {
                 width={25}
                 height={25}
               />
-              <p className="text-black text-lg text-right">Dolazi: {eventDetails?.users.length}</p>
+              <p className="text-black text-lg text-right">
+                Dolazi: {eventDetails?.users.length}
+              </p>
             </div>
           </div>
         </div>

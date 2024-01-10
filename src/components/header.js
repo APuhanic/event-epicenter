@@ -8,11 +8,12 @@ const Header = () => {
     color: "white",
     padding: "0.75rem",
     textAlign: "center",
+    transition: "background-color 0.3s ease-in-out",
   };
 
   return (
     <header className="flex flex-col items-center" style={headerStyle}>
-      <div>
+      <div className="group">
         <Link href="/">
           <Image
             src="/logo.png"
@@ -22,6 +23,7 @@ const Header = () => {
             sizes="80vw"
             style={{ width: '100%', height: 'auto' }}
             priority={true}
+            className="group-hover:brightness-75 transition-all duration-300"
           />
         </Link>
       </div>

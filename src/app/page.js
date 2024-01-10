@@ -2,26 +2,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Event from "@/components/event";
 import { useEffect, useState } from "react";
 import { EVENTS_ENDPOINT } from "@/api/endpoints";
-import { useAuth } from "@/contexts/authContext";
 import EventList from "@/components/eventList";
+import { detailsButtonStyle } from "./styles";
 
 export default function Home() {
-  const detailsButtonStyle = {
-    backgroundColor: "rgb(92,156,176)",
-  };
-
-  const { getTokenFromLocalStorage } = useAuth();
-
-  const userToken = getTokenFromLocalStorage();
-
   const [events, setEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  }
 
   const fetchEvents = async () => {
     try {
@@ -43,28 +39,25 @@ export default function Home() {
         console.error("Error fetching events", response.status);
         console.error("Error fetching events", response.body);
         console.error("Error fetching events", response);
-
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
+
+
   return (
     <>
       <div className="flex flex-row items-center justify-center p-4 ">
         <div className="flex-1"></div>
 
-        <Link href="/datumi">
-          <div className="text-medium font-semibold text-center text-black mr-4">
-            DOGAĐAJI
-          </div>
-        </Link>
+        <div className="text-medium font-semibold text-center text-black mr-4">
+          DOGAĐAJI
+        </div>
 
-        <Link href="/datumi">
-          <div className="text-medium font-semibold text-center text-black mr-4">
-            DATUMI
-          </div>
-        </Link>
+        <div className="text-medium font-semibold text-center text-black mr-4">
+          DATUMI
+        </div>
 
         <div className="flexbox">
           <div className="search">
@@ -101,6 +94,7 @@ export default function Home() {
           VIŠE
         </button>
       </div>
+
     </>
   );
 }
