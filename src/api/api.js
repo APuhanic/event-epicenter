@@ -1,6 +1,8 @@
-import { EVENTS_ENDPOINT } from "@/api/endpoints";
-import { useAuth } from "@/contexts/authContext";
-import { USER_ENDPOINT } from "@/api/endpoints";
+import {
+  USER_ENDPOINT,
+  EVENTS_ENDPOINT,
+  ATTENDANCE_ENDPOINT,
+} from "@/api/endpoints";
 
 export const fetchEvents = async () => {
   try {
@@ -82,4 +84,67 @@ export const fetchUserData = async (userID, userToken) => {
   }
 };
 
+export const removeUserFromEvent = async (eventId, userId, userToken) => {
+  try {
+    const url = `${ATTENDANCE_ENDPOINT}`;
+    const userAttendance = JSON.stringify({
+      eventId,
+      userId,
+    });
+    console.log("userAttendance:", userAttendance);
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: userAttendance,
+    });
 
+    if (response.ok) {
+      const data = await response.text();
+      console.log("response", response.status);
+      console.log("data", data);
+      return response.status;
+    } else {
+      console.error("Error deleting event", response.status);
+      console.error("Error deleting event", response.body);
+      console.error("Error deleting event", await response.text());
+    }
+  } catch (error) {
+    console.error("Error deleting event", error);
+  }
+};
+
+export const addUserToEvent = async (eventId, userId, userToken) => {
+  try {
+    const url = `${ATTENDANCE_ENDPOINT}`;
+
+    const userAttendance = JSON.stringify({
+      eventId,
+      userId,
+    });
+    console.log("userAttendance:", userAttendance);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: userAttendance,
+    });
+
+    if (response.ok) {
+      const data = await response.text();
+      console.log("response", response.status);
+      console.log("data", data);
+      return response.status;
+    } else {
+      console.error("Error adding event", response.status);
+      console.error("Error adding event", response.body);
+      console.error("Error adding event", response);
+    }
+  } catch (error) {
+    console.error("Error adding event", error);
+  }
+};

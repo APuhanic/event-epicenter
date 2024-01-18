@@ -14,3 +14,5 @@ export const USER_ENDPOINT = `${BASE_URL}/users`;
 export const USER_PROFILE_ENDPOINT = `${BASE_URL}/profile`;
 
 export const COMMENTS_ENDPOINT = `${BASE_URL}/comments`;
+
+export const ATTENDANCE_ENDPOINT = `${BASE_URL}/attendances`;

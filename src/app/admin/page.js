@@ -76,7 +76,6 @@ const Admin = ({}) => {
 
     try {
       const url = `${EVENTS_ENDPOINT}`;
-      console.log("url", url);
       const response = await fetch(url, {
         method: "POST",
         headers: {

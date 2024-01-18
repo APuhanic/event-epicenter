@@ -6,7 +6,6 @@ import { eventCardStyle } from "@/app/styles";
 
 const Comment = ({ comment }) => {
   const { getTokenFromLocalStorage, getUserIDFromLocalStorage } = useAuth();
-  const userID = getUserIDFromLocalStorage();
   const userToken = getTokenFromLocalStorage();
   const [user, setUser] = useState(null);
 
@@ -15,7 +14,7 @@ const Comment = ({ comment }) => {
   }, []);
 
   const getUserName = async () => {
-    const data = await fetchUserData(userID, userToken);
+    const data = await fetchUserData(comment.userId, userToken);
     setUser(data);
   };
 
