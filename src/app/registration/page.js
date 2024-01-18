@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { eventCardStyle, inputStyle, detailsButtonStyle } from "../styles";
 
-const Register = ({ title, date, location, description, imageUrl }) => {
+const Register = ({  }) => {
   const [firstName, setfirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,11 +14,15 @@ const Register = ({ title, date, location, description, imageUrl }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [city, setCity] = useState("");
-  const router = useRouter();
 
+  const router = useRouter();
 
   const handleRegister = async () => {
     try {
+      if (!dateOfBirth) {
+        console.error("Date of birth is required.");
+        return;
+      }
       const url = `${REGISTER_ENDPOINT}`;
 
       console.log("url", url);
@@ -40,7 +44,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
         lastName,
         dob: new Date(dateOfBirth).toISOString(),
         eventTypeIds,
-        city
+        city,
       });
 
       console.log("temp", temp);
@@ -50,26 +54,24 @@ const Register = ({ title, date, location, description, imageUrl }) => {
           "Content-Type": "application/json",
         },
         body: temp,
-
       });
-      console.log('Response Status:', response.status);
-      console.log('Response Headers:', response.headers);
-      const responseData = await response;
-      console.log('Response Data:', responseData);
+      console.log("Response Status:", response.status);
+      const responseData = await response.text();
+      console.log("Response Data:", responseData);
+      if (responseData == "EMAIL_EXISTS") {
+        //TODO: alert unutar stranice
+        alert("Korisnik s unesenom e-mail adresom već postoji!");
+      }
       if (response.ok) {
         const data = await response;
         console.log("response", response);
         console.log("events", data);
         router.replace("/login");
-
       } else {
         console.error("Error fetching ", response.status);
-
-        
       }
     } catch (error) {
-      console.error( error);
-
+      console.error(error);
     }
   };
 
@@ -91,6 +93,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite ime"
               style={inputStyle}
               onChange={(e) => setfirstName(e.target.value)}
+              required
             />
           </div>
 
@@ -103,6 +106,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite prezime"
               style={inputStyle}
               onChange={(e) => setLastName(e.target.value)}
+              required
             />
           </div>
         </div>
@@ -152,6 +156,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite e-mail..."
               style={inputStyle}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
@@ -166,6 +171,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite e-mail..."
               style={inputStyle}
               onChange={(e) => setEmailConfirmation(e.target.value)}
+              required
             />
           </div>
         </div>
@@ -180,6 +186,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite lozninku..."
               style={inputStyle}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
 
@@ -192,6 +199,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite lozinku..."
               style={inputStyle}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
+              required
             />
           </div>
         </div>
@@ -206,6 +214,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
               placeholder="Upišite grad"
               style={inputStyle}
               onChange={(e) => setCity(e.target.value)}
+              required
             />
           </div>
 
@@ -222,6 +231,7 @@ const Register = ({ title, date, location, description, imageUrl }) => {
                 placeholder="Mjesec"
                 style={inputStyle}
                 onChange={(e) => setDateOfBirth(e.target.value)}
+                required
               />
             </div>
           </div>

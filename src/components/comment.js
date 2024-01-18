@@ -1,15 +1,22 @@
-import React from "react";
+import { fetchUserData } from "@/api/api";
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { useAuth } from "@/contexts/authContext";
+import { eventCardStyle } from "@/app/styles";
 
-const Comment = ({ title, date, location, description, imageUrl }) => {
-  const eventCardStyle = {
-    backgroundColor: "rgb(217, 217, 217)",
-    color: "white",
-    padding: "0.75rem",
-    textAlign: "center",
-  };
+const Comment = ({ comment }) => {
+  const { getTokenFromLocalStorage, getUserIDFromLocalStorage } = useAuth();
+  const userID = getUserIDFromLocalStorage();
+  const userToken = getTokenFromLocalStorage();
+  const [user, setUser] = useState(null);
 
-  const detailsButtonStyle = {
-    backgroundColor: "rgb(92,156,176)",
+  useEffect(() => {
+    getUserName();
+  }, []);
+
+  const getUserName = async () => {
+    const data = await fetchUserData(userID, userToken);
+    setUser(data);
   };
 
   return (
@@ -18,8 +25,10 @@ const Comment = ({ title, date, location, description, imageUrl }) => {
       style={eventCardStyle}
     >
       <div className="flex flex-col">
-        <p className="text-black text-lg text-left font-bold">{date} Ime korisnika:</p>
-        <p className="text-black text-lg text-left my-5">{title} Komentar</p>
+        <p className="text-black text-lg text-left font-bold">
+          {user?.firstName} {user?.lastName}
+        </p>
+        <p className="text-black text-lg text-left my-5"> {comment?.message}</p>
       </div>
     </div>
   );

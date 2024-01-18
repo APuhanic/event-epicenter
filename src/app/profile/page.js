@@ -3,9 +3,9 @@
 import React from "react";
 import { useAuth } from "@/contexts/authContext";
 import { useState, useEffect } from "react";
-import { USER_ENDPOINT } from "@/api/endpoints";
-import { detailsButtonStyle } from "../styles";
+import { detailsButtonStyle, eventCardStyle } from "../styles";
 import { useRouter } from "next/navigation";
+import { fetchUserData } from "@/api/api";
 
 const Profile = ({}) => {
   const {
@@ -29,8 +29,14 @@ const Profile = ({}) => {
     if (isLoggedIn() === false) {
       router.replace("/login");
     }
-    fetchUserData();
+    fetchData();
+    
   }, []);
+
+  const fetchData = async () => {
+    const data = await fetchUserData(userID, userToken);
+    setUserData(data);
+  }
 
   const handleLogout = async () => {
     const logoutResponse = await logout();
@@ -39,72 +45,50 @@ const Profile = ({}) => {
     }
   };
 
-  const fetchUserData = async () => {
-    try {
-      if (userID && userToken) {
-        const url = `${USER_ENDPOINT}/${userID}`;
-        console.log("url", url);
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userToken}`,
-          },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("response", data);
-          setUserData(data);
-        } else {
-          console.error("Error fetching user data:", response.status);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
+  
   return (
     <>
-      <div className="flex p-20 ">
-        <div className="flex-1">
-          <div className="flex flex-row justify-between">
-            <p className="text-black text-lg font-bold">Profil</p>
-          </div>
+      <div
+        className="flex flex-col p-20 m-20 rounded-lg"
+        style={eventCardStyle}
+      >
+        <p className="text-black text-lg font-bold my-2">Profil</p>
 
-          <p className="text-black text-lg">
-            Ime: {userData ? userData.firstName : ""}
-          </p>
-          <p className="text-black text-lg">
-            Prezime: {userData ? userData.lastName : ""}
-          </p>
-          <p className="text-black text-lg">
-            Grad: {userData ? userData.city : ""}
-          </p>
-          <p className="text-black text-lg">
-            Datum rođenja: {userData ? userData.dob : ""}
-          </p>
-          {/* Displaying eventTypeIds */}
-          <div className="text-black text-lg">
-            EventTypeIds:
-            {userData &&
-              userData.eventTypeIds &&
-              userData.eventTypeIds.map((typeId, index) => (
-                <span key={index}>
-                  {index > 0 && ", "} {typeId}
-                </span>
-              ))}
-          </div>
+        <p className="text-black text-lg my-1">
+          Ime: {userData ? userData.firstName : ""}{" "}
+          {userData ? userData.lastName : ""}
+        </p>
+        <p className="text-black text-lg my-1">
+          Grad: {userData ? userData.city : ""}
+        </p>
+        <p className="text-black text-lg my-1">
+          Datum rođenja:
+          {userData && userData.dob
+            ? new Date(userData.dob)
+                .toLocaleDateString("en-GB")
+                .replace(/\//g, ".")
+            : ""}
+        </p>
+        {/* Displaying eventTypeIds */}
+        <div className="text-black text-lg my-1">
+          Preference:
+          {userData &&
+            userData.eventTypeIds &&
+            userData.eventTypeIds.map((typeId, index) => (
+              <span key={index}>
+                {index > 0 && ", "} {typeId}
+              </span>
+            ))}
         </div>
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded mr-4 rounded-lg "
+          className="bg-blue-500  text-white  font-light py-1 px-8 rounded mr-4 rounded-lg w-1/4"
           style={detailsButtonStyle}
           onClick={handleLogout}
         >
           Odjava
         </button>
+
+        {/*TODO: Edit preferences*/}
       </div>
     </>
   );

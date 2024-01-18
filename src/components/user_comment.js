@@ -1,33 +1,60 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/authContext";
 import { useState, useEffect } from "react";
+import { eventCardStyle, inputStyle, detailsButtonStyle } from "@/app/styles";
+import { COMMENTS_ENDPOINT } from "@/api/endpoints";
 
-const UserComment = ({ title, date, location, description, imageUrl }) => {
-  const eventCardStyle = {
-    backgroundColor: "rgb(217, 217, 217)",
-    padding: "0.75rem",
-    textAlign: "left",
-  };
-
-  const detailsButtonStyle = {
-    backgroundColor: "rgb(92,156,176)",
-  };
-
+const UserComment = ({ eventId }) => {
   const commentButtonStyle = {
     backgroundColor: "rgb(217, 217, 217)",
   };
 
-  const { isLoggedIn } = useAuth();
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [comment, setComment] = useState("");
+  const { isLoggedIn, getUserIDFromLocalStorage, getTokenFromLocalStorage } = useAuth();
+  const userId = getUserIDFromLocalStorage();
+  const userToken = getTokenFromLocalStorage();
 
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [message, setMessage] = useState("");
   useEffect(() => {
     setIsUserLoggedIn(isLoggedIn());
   }, []);
+
+
+  const handleAddMessage = async () => {
+    const userComment = JSON.stringify({
+      message,
+      eventId,
+      userId,
+    });
+
+    try {
+      const url = `${COMMENTS_ENDPOINT}`;
+      console.log("url", url);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: userComment,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("response", data);
+        //fetchComments();
+      } else {
+        console.error("Error adding events", response.status);
+        console.error("Error adding events", response.body);
+        console.error("Error adding events", response);
+      }
+    } catch (error) {
+      console.error("Error adding events", error);
+    }
+  };
 
   return (
     <div
@@ -42,11 +69,15 @@ const UserComment = ({ title, date, location, description, imageUrl }) => {
             "
             placeholder="Ostavi svoj komentar ..."
             style={eventCardStyle}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              console.log(message);
+            }}
           ></textarea>
           <button
             className="bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded mt-2 text-ls mt-2"
             style={detailsButtonStyle}
+            onClick={handleAddMessage}
           >
             Komentiraj
           </button>

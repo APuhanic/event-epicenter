@@ -16,6 +16,7 @@ const InputField = ({ label, type, name, placeholder, value, onChange }) => {
         value={value}
         onChange={onChange}
         style={inputStyle}
+        required
       />
     </div>
   );

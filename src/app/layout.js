@@ -11,7 +11,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>Title</title>
+        <title>Event Epicenter</title>
+        <link rel="icon" href="/logo_icon.png" />
         <meta name="Event Epicenter" content="" />
       </head>
       <body className={inter.className}>

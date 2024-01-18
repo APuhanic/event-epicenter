@@ -9,20 +9,23 @@ import { LOGIN_ENDPOINT } from "@/api/endpoints";
 import { eventCardStyle, inputStyle, detailsButtonStyle } from "../styles";
 
 const Login = ({}) => {
-
-
   const [email, setEmail] = useState("admin@gmail.com");
   const [password, setPassword] = useState("123456");
-  
+
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const router = useRouter();
 
-  const { userToken, setUserToken, isLoading, setIsLoading, setUserID } =
-    useAuth();
+  const { setUserToken, setIsLoading, setUserID } = useAuth();
 
   const handleLogin = async () => {
     try {
+      setEmailError("");
+      setPasswordError("");
+
       const temp = JSON.stringify({ email, password });
-      console.log("temp", temp);
+      console.log("User login:", temp);
       const response = await fetch(LOGIN_ENDPOINT, {
         method: "POST",
         headers: {
@@ -31,6 +34,16 @@ const Login = ({}) => {
 
         body: JSON.stringify({ email, password }),
       });
+      if (response.status == 400) {
+        const data = await response.text();
+        if (data == "INVALID_EMAIL") {
+          setEmailError("Nevažeća e-mail adresa");
+        }
+        if (data == "INVALID_LOGIN_CREDENTIALS") {
+          setPasswordError("Neispravna lozinka");
+        }
+        console.log(data);
+      }
 
       if (response.ok) {
         const data = await response.json();
@@ -60,19 +73,38 @@ const Login = ({}) => {
           placeholder="Upišite e-mail"
           style={inputStyle}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
+        {emailError && (
+          <div
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">{emailError}</span>
+          </div>
+        )}
+
         <p className="text-black text-left my-2">Lozinka:</p>
         <input
           type="password"
           name="password"
-          className="form-input text-black w-full mb-20 rounded-lg placeholder-white border-none"
+          className="form-input text-black w-full mb-5 rounded-lg placeholder-white border-none"
           placeholder="Upišite lozinku"
           style={inputStyle}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
+        {passwordError && (
+          <div
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">{passwordError}</span>
+          </div>
+        )}
         <div className="flex justify-center">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded mr-4 rounded-lg "
+            className="bg-blue-500 hover:bg-blue-700 text-white mt-10 font-light py-1 px-8 rounded mr-4 rounded-lg "
             style={detailsButtonStyle}
             onClick={handleLogin}
           >

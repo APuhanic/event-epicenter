@@ -12,8 +12,9 @@ const SelectField = ({ label, options, value, onChange }) => {
       <select
         className="form-select text-black rounded-lg outline-none"
         style={inputStyle}
-        value={value}
+        value={value} 
         onChange={onChange}
+        required
       >
         <option value="">Odaberi opciju</option>
         {options.map((option) => (

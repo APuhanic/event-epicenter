@@ -3,48 +3,39 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { EVENTS_ENDPOINT } from "@/api/endpoints";
 import EventList from "@/components/eventList";
 import { detailsButtonStyle } from "./styles";
+import { fetchEvents } from "@/api/api";
+import { inputStyle } from "./styles";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null); // Set initial value to null or empty string
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchEvents();
+    fetchData();
   }, []);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  }
-
-  const fetchEvents = async () => {
-    try {
-      const url = `${EVENTS_ENDPOINT}`;
-      console.log("url", url);
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("response", response);
-        setEvents(data);
-        console.log("events", data);
-      } else {
-        console.error("Error fetching events", response.status);
-        console.error("Error fetching events", response.body);
-        console.error("Error fetching events", response);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
+  const fetchData = async () => {
+    const data = await fetchEvents();
+    setEvents(data);
   };
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const filteredEvents = events.filter((event) => {
+    const eventDate = new Date(event.date).toISOString().split("T")[0];
+    const selectedDateFormatted = selectedDate
+      ? new Date(selectedDate).toISOString().split("T")[0]
+      : null;
+
+    return (
+      event.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (!selectedDateFormatted || eventDate == selectedDateFormatted)
+    );
+  });
 
   return (
     <>
@@ -55,9 +46,17 @@ export default function Home() {
           DOGAĐAJI
         </div>
 
-        <div className="text-medium font-semibold text-center text-black mr-4">
-          DATUMI
-        </div>
+        <input
+          type="date"
+          name="date"
+          className="form-input text-black  placeholder-white rounded-lg placeholder-red-300"
+          placeholder={"Izaberi datum"}
+          style={inputStyle}
+          onChange={(e) => {
+            setSelectedDate(e.target.value);
+            console.log(selectedDate);
+          }}
+        />
 
         <div className="flexbox">
           <div className="search">
@@ -67,6 +66,8 @@ export default function Home() {
                 placeholder="Search . . ."
                 required
                 className="ring-0"
+                value={searchQuery}
+                onChange={handleSearch}
               />
             </div>
           </div>
@@ -84,7 +85,7 @@ export default function Home() {
         </Link>
       </div>
       <div className="flex flex-col items-center justify-center">
-        <EventList events={events} />
+        <EventList events={filteredEvents} />
       </div>
       <div className="flex flex-col items-center justify-center">
         <button
@@ -94,7 +95,6 @@ export default function Home() {
           VIŠE
         </button>
       </div>
-
     </>
   );
 }

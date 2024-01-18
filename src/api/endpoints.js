@@ -1,3 +1,5 @@
+import e from "cors";
+
 const BASE_URL = "https://localhost:7267";
 
 export const LOGIN_ENDPOINT = `${BASE_URL}/login`;
@@ -10,3 +12,5 @@ export const EVENT_IMAGE_ENDPOINT = `${BASE_URL}/events/image`;
 
 export const USER_ENDPOINT = `${BASE_URL}/users`;
 export const USER_PROFILE_ENDPOINT = `${BASE_URL}/profile`;
+
+export const COMMENTS_ENDPOINT = `${BASE_URL}/comments`;

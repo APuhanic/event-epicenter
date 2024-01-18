@@ -6,16 +6,19 @@ import Comment from "@/components/comment";
 import UserComment from "@/components/user_comment";
 import { useAuth } from "@/contexts/authContext";
 import { useState } from "react";
-import { EVENTS_ENDPOINT } from "@/api/endpoints";
+import { COMMENTS_ENDPOINT, EVENTS_ENDPOINT } from "@/api/endpoints";
+import CommentList from "@/components/commentList";
 
 const EventDetails = ({ params }) => {
   const { isLoggedIn } = useAuth();
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [eventDetails, seteventDetails] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     setIsUserLoggedIn(isLoggedIn());
     fetchEventDetails();
+    fetchComments();
   }, []);
   const id = params.id;
 
@@ -42,6 +45,31 @@ const EventDetails = ({ params }) => {
       console.error("Error fetching user data:", error);
     }
   };
+
+  const fetchComments = async () => {
+    try {
+      const url = `${COMMENTS_ENDPOINT}/${id}`;
+      console.log("url", url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const comments = await response.json();
+        console.log("Data", comments);
+        setComments(comments);
+      } else {
+        console.error("Error fetching events", response.status);
+        console.error("Error fetching events", response.body);
+        console.error("Error fetching events", response);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
 
   return (
     <>
@@ -150,9 +178,9 @@ const EventDetails = ({ params }) => {
       <div className="ml-8">
         <p className="text-left text-black my-2 ml-10">Komentari</p>
         <div className="flex-col justify-center">
-          <UserComment />
-          <Comment />
-          <Comment />
+          <UserComment eventId={id}/>
+          {/* Dodati sortiranje po datumu*/}
+          <CommentList comments={comments} />
         </div>
       </div>
     </>
