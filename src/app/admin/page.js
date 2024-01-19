@@ -8,8 +8,10 @@ import TextareaField from "@/components/textareaField";
 import { eventCardStyle, detailsButtonStyle, inputStyle } from "../styles";
 import { EVENTS_ENDPOINT, EVENT_IMAGE_ENDPOINT } from "@/api/endpoints";
 import { useAuth } from "@/contexts/authContext";
-import { fetchEvents } from "@/api/api";
+import { fetchEvents, fetchEventTypes } from "@/api/api";
 import AdminEventList from "@/components/admin/adminEventList";
+import LoadingSkeletonEventList from "@/components/loadingSkeletonEventList";
+import EventTypesManagment from "@/components/admin/eventTypesManagment";
 
 const Admin = ({}) => {
   const [name, setName] = useState("");
@@ -20,16 +22,15 @@ const Admin = ({}) => {
   const [description, setDescription] = useState("");
   const [date, setdate] = useState("");
   const [location, setLocation] = useState("");
-
-  const { getTokenFromLocalStorage, getUserIDFromLocalStorage } = useAuth();
-
   const [eventImage, setEventImage] = useState(null);
   const [imagePath, setImagePath] = useState("");
 
-  const userID = getUserIDFromLocalStorage();
-  const userToken = getTokenFromLocalStorage();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState([]);
+  const [eventTypes, setEventTypes] = useState([]);
+
+  const { getTokenFromLocalStorage } = useAuth();
+  const userToken = getTokenFromLocalStorage();
 
   const handleImageAsFile = (e) => {
     setEventImage(e.target.files[0]);
@@ -40,8 +41,15 @@ const Admin = ({}) => {
   }, []);
 
   const fetchData = async () => {
-    const data = await fetchEvents();
-    setEvents(data);
+    try {
+      setIsLoading(true);
+      const eventData = await fetchEvents();
+      setEvents(eventData);
+      const eventTypesData = await fetchEventTypes();
+      setEventTypes(eventTypesData);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetFields = () => {
@@ -138,26 +146,24 @@ const Admin = ({}) => {
           className="bg-white p-12 my-8 rounded-lg w-4/5 border-none focus:border-none"
           style={eventCardStyle}
         >
-          <p className="text-black text-center">Admin</p>
+          <p className="text-black text-center">Admin Dashboard</p>
 
           <div className="flex justify-between">
             <InputField
               name="eventName"
-              label="Naziv događaja:"
+              label="Naziv događaja"
               placeholder="Upišite naziv događaja..."
               type={"text"}
               className="w-full "
               onChange={(e) => setName(e.target.value)}
-              
             />
 
             <SelectField
               label="Vrsta događaja"
-              options={[
-                { label: "Glazba", value: "glazba" },
-                { label: "Sport", value: "sport" },
-                { label: "Kultura", value: "kultura" },
-              ]}
+              options={eventTypes.map((eventType) => ({
+                label: eventType.name,
+                value: eventType.id,
+              }))}
               value={eventTypeId}
               onChange={(e) => setEventTypeId(e.target.value)}
             />
@@ -177,6 +183,7 @@ const Admin = ({}) => {
                 label="Grad"
                 placeholder="Upišite naziv grada..."
                 type={"text"}
+                value={city}
                 onChange={(e) => setCity(e.target.value)}
               />
             </div>
@@ -187,7 +194,8 @@ const Admin = ({}) => {
                 label="Lokacija"
                 placeholder="Upišite naziv lokacije..."
                 type={"text"}
-                onChange={(e) => setCity(e.target.value)}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
               />
             </div>
           </div>
@@ -197,6 +205,7 @@ const Admin = ({}) => {
             label="Adresa"
             placeholder="Upišite adresu..."
             type={"text"}
+            value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
 
@@ -205,6 +214,7 @@ const Admin = ({}) => {
             label="Cijena"
             placeholder="Upišite cijenu..."
             type={"number"}
+            value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
 
@@ -222,6 +232,7 @@ const Admin = ({}) => {
                 type="file"
                 accept="image/*"
                 name="eventImage"
+                value={imagePath}
                 className="form-input text-black w-full rounded-lg placeholder-white border-none mb-6"
                 onChange={handleImageAsFile}
               />
@@ -239,8 +250,13 @@ const Admin = ({}) => {
           </div>
         </div>
       </div>
+
+      <EventTypesManagment />
+
+      <LoadingSkeletonEventList isLoading={isLoading} skeletonNumber={4} />
+
       <div className="flex flex-col items-center justify-center">
-        <AdminEventList events={events} onEventDelete={onEventDelete}/>
+        <AdminEventList events={events} onEventDelete={onEventDelete} />
       </div>
     </>
   );

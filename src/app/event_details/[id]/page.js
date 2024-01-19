@@ -129,7 +129,7 @@ const EventDetails = ({ params }) => {
                 Vrsta događaja:
               </p>
               <p className="text-black text-lg text-right">
-                {eventDetails?.eventTypeId}
+                {eventDetails?.eventType?.name}
               </p>
             </div>
           </div>

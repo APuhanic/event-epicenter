@@ -4,22 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import EventList from "@/components/eventList";
-import { detailsButtonStyle } from "./styles";
+import { detailsButtonStyle, eventCardStyle } from "./styles";
 import { fetchEvents } from "@/api/api";
 import { inputStyle } from "./styles";
+import LoadingSkeletonEventList from "@/components/loadingSkeletonEventList";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null); // Set initial value to null or empty string
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const data = await fetchEvents();
-    setEvents(data);
+    try {
+      setIsLoading(true);
+      const data = await fetchEvents();
+      setEvents(data);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSearch = (e) => {
@@ -84,6 +91,8 @@ export default function Home() {
           />
         </Link>
       </div>
+
+      <LoadingSkeletonEventList isLoading={isLoading} skeletonNumber={4}/>
       <div className="flex flex-col items-center justify-center">
         <EventList events={filteredEvents} />
       </div>
