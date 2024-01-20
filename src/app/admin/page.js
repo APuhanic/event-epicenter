@@ -87,7 +87,6 @@ const Admin = ({}) => {
     setIsAddingEvent(true);
 
     const imagePath = await handleImageUpload();
-    console.log("eventImageData:", imagePath);
 
     const temp = JSON.stringify({
       address,
@@ -100,7 +99,6 @@ const Admin = ({}) => {
       name,
       price,
     });
-    console.log("temp", temp);
 
     try {
       const url = `${EVENTS_ENDPOINT}`;
@@ -115,8 +113,6 @@ const Admin = ({}) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("response", response);
-        console.log("data", data);
         resetFields();
         fetchData();
         setIsAddingEvent(false);
@@ -145,7 +141,6 @@ const Admin = ({}) => {
 
       if (response.ok) {
         const data = await response.text();
-        console.log("Image uploaded successfully:", data);
         return data;
       } else {
         console.error("Image upload failed with status:", response.status);

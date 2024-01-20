@@ -29,14 +29,11 @@ const EventDetails = ({ params }) => {
       checkUserAttendance();
     }
   }, [eventDetails]);
-  useEffect(() => {
-    console.log("isGoingChipSelected", isGoingChipSelected);
-  }, [isGoingChipSelected]);
+  useEffect(() => {}, [isGoingChipSelected]);
 
   const fetchEventDetails = async () => {
     try {
       const url = `${EVENTS_ENDPOINT}/${id}`;
-      console.log("url", url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -46,7 +43,6 @@ const EventDetails = ({ params }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Event data:", data);
         setEventDetails(data);
       } else {
         console.error("Error fetching events", response.status);
@@ -61,7 +57,6 @@ const EventDetails = ({ params }) => {
   const fetchComments = async () => {
     try {
       const url = `${COMMENTS_ENDPOINT}/${id}`;
-      console.log("url", url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -71,7 +66,6 @@ const EventDetails = ({ params }) => {
 
       if (response.ok) {
         const comments = await response.json();
-        console.log("Data", comments);
         setComments(comments);
       } else {
         console.error("Error fetching events", response.status);
@@ -123,12 +117,14 @@ const EventDetails = ({ params }) => {
 
   const checkUserAttendance = () => {
     const userId = getUserIDFromLocalStorage();
-    console.log("userId za checkup", userId);
     if (eventDetails?.users.some((user) => user.id === userId)) {
-      console.log("Found it:");
       setisGoingChipSelected(true);
     }
   };
+
+  const onCommentAdded = () => {
+    fetchComments();
+  }
 
   return (
     <>
@@ -158,7 +154,10 @@ const EventDetails = ({ params }) => {
             <p className="text-black text-lg mb-6">
               <span className="font-bold">Vrijeme: </span>
               {eventDetails?.date &&
-                new Date(eventDetails.date).toLocaleTimeString()}{" "}
+                new Date(eventDetails.date).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
             </p>
 
             <div className="flex flex-row justify-between">
@@ -241,7 +240,7 @@ const EventDetails = ({ params }) => {
             Komentari
           </p>
           <div className="flex-col justify-center">
-            <UserComment eventId={id} />
+            <UserComment eventId={id} onCommentAdded={onCommentAdded}/>
             <CommentList comments={comments} />
           </div>
         </div>

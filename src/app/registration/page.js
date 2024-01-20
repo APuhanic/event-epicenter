@@ -27,9 +27,6 @@ const Register = ({}) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log("eventTypeIds", eventTypeIds);
-  }, [eventTypeIds]);
 
   const fetchData = async () => {
     try {
@@ -85,7 +82,6 @@ const Register = ({}) => {
         return;
       }
       const url = `${REGISTER_ENDPOINT}`;
-      console.log(eventTypeIds);
       const userRegistrationData = JSON.stringify({
         email,
         password,
@@ -96,7 +92,6 @@ const Register = ({}) => {
         city,
       });
 
-      console.log("userRegistrationData:", userRegistrationData);
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -104,9 +99,7 @@ const Register = ({}) => {
         },
         body: userRegistrationData,
       });
-      console.log("Response Status:", response.status);
       const responseData = await response.text();
-      console.log("Response Data:", responseData);
       if (responseData == "EMAIL_EXISTS") {
         setregistrationError("E-mail adresa već postoji");
       }
@@ -115,8 +108,6 @@ const Register = ({}) => {
       }
       if (response.ok) {
         const data = await response;
-        console.log("response", response);
-        console.log("events", data);
         router.replace("/login");
       } else {
         console.error("Error fetching ", response.status);

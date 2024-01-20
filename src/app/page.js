@@ -28,7 +28,6 @@ export default function Home() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      console.log("isLoggedIn", isLoggedIn());
       if (isLoggedIn()) {
         const userData = await fetchUserData(getUserIDFromLocalStorage());
         setUserData(userData);
@@ -47,9 +46,6 @@ export default function Home() {
     setSearchQuery(e.target.value);
   };
 
-  useEffect(() => {
-    console.log("selectedEventTypes", selectedEventTypes);
-  }, [selectedEventTypes]);
 
   const handleEventTypeToggle = (eventTypeId) => {
     setSelectedEventTypes((prevSelectedEventTypes) => {
@@ -128,7 +124,6 @@ export default function Home() {
           style={inputStyle}
           onChange={(e) => {
             setSelectedDate(e.target.value);
-            console.log(selectedDate);
           }}
         />
 

@@ -25,7 +25,6 @@ const Login = ({}) => {
       setPasswordError("");
 
       const temp = JSON.stringify({ email, password });
-      console.log("User login:", temp);
       const response = await fetch(LOGIN_ENDPOINT, {
         method: "POST",
         headers: {
@@ -42,13 +41,11 @@ const Login = ({}) => {
         if (data == "INVALID_LOGIN_CREDENTIALS") {
           setPasswordError("Neispravna lozinka");
         }
-        console.log(data);
       }
 
       if (response.ok) {
         const data = await response.json();
         setUserToken(data.accessToken);
-        console.log("User login:", data.userId);
         setUserID(data.userId);
         router.replace("/profile");
       }

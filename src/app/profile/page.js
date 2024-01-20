@@ -69,7 +69,6 @@ const Profile = ({}) => {
         eventTypeIds: updatedSelectedEventTypes,
       };
       const response = await updateUser(userID, userToken, updatedUserData);
-      console.log("Updated user preferences:", response);
       setUserData(response);
     } catch (error) {
       console.error("Error updating user preferences:", error);

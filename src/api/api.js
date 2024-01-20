@@ -8,7 +8,6 @@ import {
 export const fetchEvents = async () => {
   try {
     const url = `${EVENTS_ENDPOINT}`;
-    console.log("url", url);
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -18,8 +17,6 @@ export const fetchEvents = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("response", response);
-      console.log("data", data);
       return data;
     } else {
       console.error("Error fetching events", response.status);
@@ -34,7 +31,6 @@ export const fetchEvents = async () => {
 export const deleteEvent = async (eventID, userToken) => {
   try {
     const url = `${EVENTS_ENDPOINT}/${eventID}`;
-    console.log("url", url);
     const response = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -45,8 +41,6 @@ export const deleteEvent = async (eventID, userToken) => {
 
     if (response.ok) {
       const data = await response.text();
-      console.log("response", response.status);
-      console.log("data", data);
       return response.status;
     } else {
       console.error("Error deleting event", response.status);
@@ -61,7 +55,6 @@ export const deleteEvent = async (eventID, userToken) => {
 export const fetchUserData = async (userID) => {
   try {
     const url = `${USER_ENDPOINT}/${userID}`;
-    console.log("url", url);
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -72,7 +65,6 @@ export const fetchUserData = async (userID) => {
 
     if (response.ok) {
       const userData = await response.json();
-      console.log("userData:", userData);
       return userData;
     } else {
       console.error("Error fetching user data:", response.status);
@@ -89,7 +81,6 @@ export const removeUserFromEvent = async (eventId, userId, userToken) => {
       eventId,
       userId,
     });
-    console.log("userAttendance:", userAttendance);
     const response = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -101,8 +92,6 @@ export const removeUserFromEvent = async (eventId, userId, userToken) => {
 
     if (response.ok) {
       const data = await response.text();
-      console.log("response", response.status);
-      console.log("data", data);
       return response.status;
     } else {
       console.error("Error deleting event", response.status);
@@ -122,7 +111,6 @@ export const addUserToEvent = async (eventId, userId, userToken) => {
       eventId,
       userId,
     });
-    console.log("userAttendance:", userAttendance);
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -134,8 +122,6 @@ export const addUserToEvent = async (eventId, userId, userToken) => {
 
     if (response.ok) {
       const data = await response.text();
-      console.log("response", response.status);
-      console.log("data", data);
       return response.status;
     } else {
       console.error("Error adding event", response.status);
@@ -158,7 +144,6 @@ export const fetchEventTypes = async () => {
     });
     if (response.ok) {
       const eventTypes = await response.json();
-      console.log("eventTypes", eventTypes);
       return eventTypes;
     } else {
       console.error("Error fetching event types", response.status);
@@ -175,7 +160,6 @@ export const addEventType = async (name, userToken) => {
     const eventTypeData = JSON.stringify({
       name,
     });
-    console.log("eventTypeData:", eventTypeData);
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -187,8 +171,6 @@ export const addEventType = async (name, userToken) => {
 
     if (response.ok) {
       const data = await response.text();
-      console.log("response", response.status);
-      console.log("data", data);
       return response.status;
     } else {
       console.error("Error adding event type", response.status);
@@ -202,7 +184,6 @@ export const addEventType = async (name, userToken) => {
 export const removeEventType = async (eventTypeId, userToken) => {
   try {
     const url = `${EVENT_TYPES_ENDPOINT}/${eventTypeId}`;
-    console.log("url", url);
     const response = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -213,8 +194,6 @@ export const removeEventType = async (eventTypeId, userToken) => {
 
     if (response.ok) {
       const data = await response.text();
-      console.log("response", response.status);
-      console.log("data", data);
       return response.status;
     } else {
       console.error("Error deleting event type", response.status);
@@ -229,7 +208,6 @@ export const updateUser = async (userID, userToken, userData) => {
   try {
     const url = `${USER_ENDPOINT}/${userID}`;
     const userDataJSON = JSON.stringify(userData);
-    console.log("userDataJSON:", userDataJSON);
     const response = await fetch(url, {
       method: "PUT",
       headers: {

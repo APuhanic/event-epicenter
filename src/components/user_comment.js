@@ -7,12 +7,13 @@ import { useState, useEffect } from "react";
 import { eventCardStyle, inputStyle, detailsButtonStyle } from "@/app/styles";
 import { COMMENTS_ENDPOINT } from "@/api/endpoints";
 
-const UserComment = ({ eventId }) => {
+const UserComment = ({ eventId, onCommentAdded }) => {
   const commentButtonStyle = {
     backgroundColor: "rgb(217, 217, 217)",
   };
 
-  const { isLoggedIn, getUserIDFromLocalStorage, getTokenFromLocalStorage } = useAuth();
+  const { isLoggedIn, getUserIDFromLocalStorage, getTokenFromLocalStorage } =
+    useAuth();
   const userId = getUserIDFromLocalStorage();
   const userToken = getTokenFromLocalStorage();
 
@@ -21,7 +22,6 @@ const UserComment = ({ eventId }) => {
   useEffect(() => {
     setIsUserLoggedIn(isLoggedIn());
   }, []);
-
 
   const handleAddMessage = async () => {
     const userComment = JSON.stringify({
@@ -32,7 +32,6 @@ const UserComment = ({ eventId }) => {
 
     try {
       const url = `${COMMENTS_ENDPOINT}`;
-      console.log("url", url);
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -43,9 +42,8 @@ const UserComment = ({ eventId }) => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("response", data);
-        //fetchComments();
+        onCommentAdded();
+        setMessage("");
       } else {
         console.error("Error adding events", response.status);
         console.error("Error adding events", response.body);
@@ -73,6 +71,7 @@ const UserComment = ({ eventId }) => {
               setMessage(e.target.value);
               console.log(message);
             }}
+            value={message}
           ></textarea>
           <button
             className="bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded mt-2 text-ls mt-2"
