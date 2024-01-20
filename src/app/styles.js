@@ -1,4 +1,3 @@
-// styles.js
 
 export const eventCardStyle = {
   backgroundColor: "rgb(217, 217, 217)",
@@ -11,4 +10,8 @@ export const inputStyle = {
 
 export const detailsButtonStyle = {
   backgroundColor: "rgb(92,156,176)",
+};
+
+export const highlightedEventStyle = {
+  backgroundColor: "rgb(230, 230, 230)",
 };

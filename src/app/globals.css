@@ -50,7 +50,7 @@ const detailsButtonStyle = {
   width: 3px;
   height: 15px;
   position: absolute;
-  top: 18px;
+  top: 24px;
   transform: rotate(135deg);
 }
 
@@ -58,14 +58,16 @@ const detailsButtonStyle = {
   color: black;
   font-size: 16px;
   background: transparent;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   padding: 8px;
   border: solid 3px black;
   outline: none;
   border-radius: 35px;
   transition: width 0.5s;
 }
+
+
 
 .search > div > input:focus {
   border-color: black !important;

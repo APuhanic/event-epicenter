@@ -30,7 +30,6 @@ const AdminEvent = ({ event, onEventDelete }) => {
       style={eventCardStyle}
     >
       <div className="ml-4">
-        {/* Event Image */}
         {event.imagePath && (
           <img
             src={event.imagePath}

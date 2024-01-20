@@ -48,6 +48,7 @@ const Login = ({}) => {
       if (response.ok) {
         const data = await response.json();
         setUserToken(data.accessToken);
+        console.log("User login:", data.userId);
         setUserID(data.userId);
         router.replace("/profile");
       }

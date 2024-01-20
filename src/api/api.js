@@ -58,27 +58,24 @@ export const deleteEvent = async (eventID, userToken) => {
   }
 };
 
-export const fetchUserData = async (userID, userToken) => {
+export const fetchUserData = async (userID) => {
   try {
-    if (userID && userToken) {
-      const url = `${USER_ENDPOINT}/${userID}`;
-      console.log("url", url);
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        },
-        credentials: "include",
-      });
+    const url = `${USER_ENDPOINT}/${userID}`;
+    console.log("url", url);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
 
-      if (response.ok) {
-        const userData = await response.json();
-        console.log("userData:", userData);
-        return userData;
-      } else {
-        console.error("Error fetching user data:", response.status);
-      }
+    if (response.ok) {
+      const userData = await response.json();
+      console.log("userData:", userData);
+      return userData;
+    } else {
+      console.error("Error fetching user data:", response.status);
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -152,24 +149,22 @@ export const addUserToEvent = async (eventId, userId, userToken) => {
 
 export const fetchEventTypes = async () => {
   const url = `${EVENT_TYPES_ENDPOINT}`;
-  try{
+  try {
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if(response.ok){
+    if (response.ok) {
       const eventTypes = await response.json();
       console.log("eventTypes", eventTypes);
       return eventTypes;
     } else {
       console.error("Error fetching event types", response.status);
-      console.error("Error fetching event types", response.body);
       console.error("Error fetching event types", response);
     }
-  }
-  catch(error){
+  } catch (error) {
     console.error("Error fetching event types", error);
   }
 };
@@ -197,13 +192,12 @@ export const addEventType = async (name, userToken) => {
       return response.status;
     } else {
       console.error("Error adding event type", response.status);
-      console.error("Error adding event type", response.body);
       console.error("Error adding event type", response);
     }
   } catch (error) {
     console.error("Error adding event type", error);
   }
-}
+};
 
 export const removeEventType = async (eventTypeId, userToken) => {
   try {
@@ -224,12 +218,35 @@ export const removeEventType = async (eventTypeId, userToken) => {
       return response.status;
     } else {
       console.error("Error deleting event type", response.status);
-      console.error("Error deleting event type", response.body);
       console.error("Error deleting event type", response);
     }
   } catch (error) {
     console.error("Error deleting event type", error);
   }
-}
+};
 
+export const updateUser = async (userID, userToken, userData) => {
+  try {
+    const url = `${USER_ENDPOINT}/${userID}`;
+    const userDataJSON = JSON.stringify(userData);
+    console.log("userDataJSON:", userDataJSON);
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: userDataJSON,
+    });
 
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Error updating user data", response.status);
+      console.error("Error updating user data", response);
+    }
+  } catch (error) {
+    console.error("Error updating user data", error);
+  }
+};

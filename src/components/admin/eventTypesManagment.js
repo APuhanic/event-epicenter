@@ -43,7 +43,7 @@ const EventTypesManagment = ({}) => {
           className="bg-white p-12 my-8 rounded-lg w-4/5 border-none focus:border-none"
           style={eventCardStyle}
         >
-          <p className="text-black text-center">Upravljanje vrstama događaja</p>
+          <p className="text-black text-xl font-bold text-center">Upravljanje vrstama događaja</p>
 
           <div className="flex justify-between">
             <InputField

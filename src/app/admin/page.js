@@ -1,7 +1,7 @@
 "use client";
 
 import InputField from "@/components/inputField";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SelectField from "@/components/admin/selectField";
 import DateField from "@/components/datePicker";
 import TextareaField from "@/components/textareaField";
@@ -32,6 +32,10 @@ const Admin = ({}) => {
   const { getTokenFromLocalStorage } = useAuth();
   const userToken = getTokenFromLocalStorage();
 
+  const [fillAllError, setFillAllError] = useState(false);
+  const [isAddingEvents, setIsAddingEvent] = useState(false);
+  const fileRef = useRef();
+
   const handleImageAsFile = (e) => {
     setEventImage(e.target.files[0]);
   };
@@ -39,6 +43,12 @@ const Admin = ({}) => {
   useEffect(() => {
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    if (!isAddingEvents) {
+      resetFields();
+    }
+  }, [isAddingEvents]);
 
   const fetchData = async () => {
     try {
@@ -61,11 +71,21 @@ const Admin = ({}) => {
     setDescription("");
     setdate("");
     setLocation("");
-    setEventImage(null);
+    fileRef.current.value = null;
     setImagePath("");
   };
 
   const handleAddEvent = async () => {
+    if (!checkIfAllFieldsAreFilled()) {
+      setFillAllError("Molimo popunite sva polja");
+      setTimeout(() => {
+        setFillAllError("");
+      }, 3000);
+      return;
+    }
+    setFillAllError("");
+    setIsAddingEvent(true);
+
     const imagePath = await handleImageUpload();
     console.log("eventImageData:", imagePath);
 
@@ -99,6 +119,7 @@ const Admin = ({}) => {
         console.log("data", data);
         resetFields();
         fetchData();
+        setIsAddingEvent(false);
       } else {
         console.error("Error adding events", response.status);
         console.error("Error adding events", response.body);
@@ -139,6 +160,20 @@ const Admin = ({}) => {
     setEvents(newEvents);
   };
 
+  const checkIfAllFieldsAreFilled = () => {
+    return (
+      name &&
+      city &&
+      address &&
+      price &&
+      eventTypeId &&
+      description &&
+      date &&
+      location &&
+      eventImage
+    );
+  };
+
   return (
     <>
       <div className="flex items-center justify-center">
@@ -146,7 +181,7 @@ const Admin = ({}) => {
           className="bg-white p-12 my-8 rounded-lg w-4/5 border-none focus:border-none"
           style={eventCardStyle}
         >
-          <p className="text-black text-center">Admin Dashboard</p>
+          <p className="text-black text-xl font-bold text-center">Dodavanje doagađaja</p>
 
           <div className="flex justify-between">
             <InputField
@@ -155,6 +190,7 @@ const Admin = ({}) => {
               placeholder="Upišite naziv događaja..."
               type={"text"}
               className="w-full "
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
 
@@ -232,20 +268,30 @@ const Admin = ({}) => {
                 type="file"
                 accept="image/*"
                 name="eventImage"
-                value={imagePath}
+                ref={fileRef}
                 className="form-input text-black w-full rounded-lg placeholder-white border-none mb-6"
                 onChange={handleImageAsFile}
               />
             </div>
           </div>
-
+          <div className="flex justify-center">
+            {fillAllError && (
+              <div
+                className="p-4 mb-4 text-md text-center text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 w-2/5"
+                role="alert"
+              >
+                <span className="font-medium">{fillAllError}</span>
+              </div>
+            )}
+          </div>
           <div className="flex justify-center">
             <button
               className={`bg-blue-500 hover:bg-blue-700 text-white font-light py-1 px-8 rounded rounded-lg`}
               style={detailsButtonStyle}
               onClick={handleAddEvent}
+              disabled={isAddingEvents}
             >
-              Dodaj
+              {isAddingEvents ? "Dodavanje događaja..." : "Dodaj događaj"}
             </button>
           </div>
         </div>

@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("userToken");
       localStorage.removeItem("userID");
     }
-    try{
+    try {
       const response = await fetch(LOGOUT_ENDPOINT, {
         method: "GET",
         headers: {
@@ -56,8 +56,7 @@ export const AuthProvider = ({ children }) => {
         },
       });
       return response;
-    }
-    catch(error){
+    } catch (error) {
       console.error("Error during logout:", error);
     }
     setUserToken(null);
@@ -76,8 +75,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isLoggedIn = () => {
-    console.log("userToken", userToken != null);
-    return userToken != null;
+    console.log(
+      "IS LOGGED IN: ",
+      (localStorage.getItem("userToken") &&
+        localStorage.getItem("userID")) != null
+    );
+
+    return (
+      (localStorage.getItem("userToken") &&
+        localStorage.getItem("userID")) != null
+    );
   };
 
   useEffect(() => {

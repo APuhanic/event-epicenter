@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { REGISTER_ENDPOINT } from "@/api/endpoints";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { eventCardStyle, inputStyle, detailsButtonStyle } from "../styles";
+import InputField from "@/components/inputField";
+import { fetchEventTypes } from "@/api/api";
 
-const Register = ({  }) => {
+const Register = ({}) => {
   const [firstName, setfirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,30 +16,77 @@ const Register = ({  }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [eventTypes, setEventTypes] = useState([]);
+  const [eventTypeIds, seteventTypeIds] = useState([]);
 
+  const [registrationError, setregistrationError] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("eventTypeIds", eventTypeIds);
+  }, [eventTypeIds]);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const eventTypeData = await fetchEventTypes();
+      setEventTypes(eventTypeData);
+      // Initialize eventTypeIds with all event type ids
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const checkIfAllFieldsAreFilled = () => {
+    return (
+      firstName &&
+      lastName &&
+      email &&
+      emailConfirmation &&
+      passwordConfirmation &&
+      dateOfBirth &&
+      city
+    );
+  };
+
+  const checkRegistrationData = () => {
+    if (email != emailConfirmation) {
+      setregistrationError("E-mail adrese se ne podudaraju");
+      setTimeout(() => {
+        setregistrationError("");
+      }, 3000);
+      return false;
+    }
+    if (password != passwordConfirmation) {
+      setregistrationError("Lozinke se ne podudaraju");
+      setTimeout(() => {
+        setregistrationError("");
+      }, 3000);
+      return false;
+    }
+    return true;
+  };
 
   const handleRegister = async () => {
     try {
-      if (!dateOfBirth) {
-        console.error("Date of birth is required.");
+      if (!checkIfAllFieldsAreFilled()) {
+        setregistrationError("Molimo popunite sva polja");
+        setTimeout(() => {
+          setregistrationError("");
+        }, 3000);
+        return;
+      }
+      if (!checkRegistrationData()) {
         return;
       }
       const url = `${REGISTER_ENDPOINT}`;
-
-      console.log("url", url);
-      const eventTypeIds = [];
-
-      if (document.getElementById("music").checked) {
-        eventTypeIds.push("music");
-      }
-      if (document.getElementById("sport").checked) {
-        eventTypeIds.push("sport");
-      }
-      if (document.getElementById("culture").checked) {
-        eventTypeIds.push("culture");
-      }
-      const temp = JSON.stringify({
+      console.log(eventTypeIds);
+      const userRegistrationData = JSON.stringify({
         email,
         password,
         firstName,
@@ -47,20 +96,22 @@ const Register = ({  }) => {
         city,
       });
 
-      console.log("temp", temp);
+      console.log("userRegistrationData:", userRegistrationData);
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: temp,
+        body: userRegistrationData,
       });
       console.log("Response Status:", response.status);
       const responseData = await response.text();
       console.log("Response Data:", responseData);
       if (responseData == "EMAIL_EXISTS") {
-        //TODO: alert unutar stranice
-        alert("Korisnik s unesenom e-mail adresom već postoji!");
+        setregistrationError("E-mail adresa već postoji");
+      }
+      if (responseData == "INVALID_EMAIL") {
+        setregistrationError("Nevažeća e-mail adresa");
       }
       if (response.ok) {
         const data = await response;
@@ -75,146 +126,123 @@ const Register = ({  }) => {
     }
   };
 
+  const handleEventTypeToggle = (eventTypeId) => {
+    seteventTypeIds((preveventTypeIds) => {
+      if (preveventTypeIds.includes(eventTypeId)) {
+        // Remove the event type if it's already selected
+        return preveventTypeIds.filter((id) => id !== eventTypeId);
+      } else {
+        // Add the event type if it's not selected
+        return [...preveventTypeIds, eventTypeId];
+      }
+    });
+  };
+
   return (
     <div className="flex items-center justify-center ">
       <div
-        className="bg-white p-12 my-8 rounded-lg w-4/5 border-none focus:border-none "
+        className="bg-white p-12 my-8 rounded-lg w-3/5 border-none focus:border-none "
         style={eventCardStyle}
       >
         <p className="text-black text-center">Registracija</p>
 
         <div className="flex justify-center">
           <div className="flex-col mr-10">
-            <p className="text-black text-left my-2">Ime:</p>
-            <input
-              type="text"
-              name="email"
-              className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
-              placeholder="Upišite ime"
-              style={inputStyle}
+            <InputField
+              name="Ime"
+              type={"text"}
+              placeholder={"Upišite ime"}
+              label={"Ime"}
               onChange={(e) => setfirstName(e.target.value)}
-              required
             />
           </div>
 
           <div className="flex-col ">
-            <p className="text-black text-left my-2">Prezime:</p>
-            <input
-              type="text"
-              name="password"
-              className="form-input text-black w-full  rounded-lg placeholder-white border-none"
-              placeholder="Upišite prezime"
-              style={inputStyle}
+            <InputField
+              name="Prezime"
+              type={"text"}
+              placeholder={"Upišite prezime"}
+              label={"Prezime"}
               onChange={(e) => setLastName(e.target.value)}
-              required
             />
           </div>
         </div>
 
         <p className="text-black mb-2 text-center">Događaji koje preferiram:</p>
 
-        <div className="flex justify-center mb-4">
-          <div className="mx-4">
-            <input type="checkbox" id="music" name="music" />
-            <label
-              htmlFor="culture"
-              className="ml-2 mr-6 text-black rounded-lg p-2"
-              style={inputStyle}
-            >
-              Glazba
-            </label>
-          </div>
-          <div className="mr-4">
-            <input type="checkbox" id="sport" name="sport" />
-            <label
-              htmlFor="culture"
-              className="ml-2  mr-6 text-black rounded-lg p-2"
-              style={inputStyle}
-            >
-              Sport
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" id="culture" name="culture" />
-            <label
-              htmlFor="culture"
-              className="ml-2 text-black rounded-lg p-2"
-              style={inputStyle}
-            >
-              Kultura
-            </label>
-          </div>
+        <div className="flex flex-wrap justify-center mb-4">
+          {eventTypes.map((eventType) => (
+            <div key={eventType.id} className="mx-4 flex flex-row my-2">
+              <input
+                type="checkbox"
+                id={eventType.id}
+                name={eventType.id}
+                onChange={() => handleEventTypeToggle(eventType.name)}
+                className="form-checkbox text-black mt-3"
+              />
+              <label
+                htmlFor={eventType.id}
+                className="ml-2 mr-6 text-black rounded-lg p-2"
+                style={inputStyle}
+              >
+                {eventType.name}
+              </label>
+            </div>
+          ))}
         </div>
 
         <div className="flex justify-center">
           <div className="flex-col mr-10">
-            <p className="text-black text-left my-2">E-mail adresa:</p>
-            <input
-              type="text"
+            <InputField
               name="email"
-              className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
-              placeholder="Upišite e-mail..."
-              style={inputStyle}
+              type={"text"}
+              placeholder={"Upišite e-mail"}
+              label={"E-mail adresa"}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
           </div>
 
           <div className="flex-col">
-            <p className="text-black text-left my-2">
-              Potvrdite e-mail adresu:
-            </p>
-            <input
-              type="text"
-              name="password"
-              className="form-input text-black w-full  rounded-lg placeholder-white border-none"
-              placeholder="Upišite e-mail..."
-              style={inputStyle}
+            <InputField
+              name="email"
+              type={"text"}
+              placeholder={"Potvrdite e-mail"}
+              label={"Potvrdite e-mail adresu"}
               onChange={(e) => setEmailConfirmation(e.target.value)}
-              required
             />
           </div>
         </div>
 
         <div className="flex justify-center">
           <div className="flex-col mr-10">
-            <p className="text-black text-left my-2">Lozinka:</p>
-            <input
-              type="password"
-              name="email"
-              className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
-              placeholder="Upišite lozninku..."
-              style={inputStyle}
+            <InputField
+              name="Password"
+              type={"password"}
+              placeholder={"Upišite lozinku"}
+              label={"Lozinka"}
               onChange={(e) => setPassword(e.target.value)}
-              required
             />
           </div>
 
           <div className="flex-col">
-            <p className="text-black text-left my-2">Potvrdite lozinku:</p>
-            <input
-              type="password"
-              name="password"
-              className="form-input text-black w-full  rounded-lg placeholder-white border-none"
-              placeholder="Upišite lozinku..."
-              style={inputStyle}
+            <InputField
+              name="Password"
+              type={"password"}
+              placeholder={"Potvrdite lozinku"}
+              label={"Potvrdite lozinku"}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
-              required
             />
           </div>
         </div>
 
         <div className="flex justify-center">
           <div className="flex-col mr-10 w-1/5">
-            <p className="text-black text-left my-2">Grad:</p>
-            <input
-              type="text"
-              name="email"
-              className="form-input text-black w-full  mb-6 placeholder-white border-none rounded-lg "
-              placeholder="Upišite grad"
-              style={inputStyle}
+            <InputField
+              name="city"
+              type={"text"}
+              placeholder={"Upišite grad"}
+              label={"Grad"}
               onChange={(e) => setCity(e.target.value)}
-              required
             />
           </div>
 
@@ -236,7 +264,16 @@ const Register = ({  }) => {
             </div>
           </div>
         </div>
-
+        <div className="flex justify-center">
+          {registrationError && (
+            <div
+              className="p-4 mb-4 text-md text-center text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 w-2/5"
+              role="alert"
+            >
+              <span className="font-medium">{registrationError}</span>
+            </div>
+          )}
+        </div>
         <div className="flex justify-center">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white  font-light py-1 px-8 rounded rounded-lg "
