@@ -28,15 +28,15 @@ export default function Home() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      console.log(isLoggedIn());
       if (isLoggedIn()) {
         const userData = await fetchUserData(getUserIDFromLocalStorage());
         setUserData(userData);
       }
-      const data = await fetchEvents();
+      const eventData = await fetchEvents();
       const eventTypes = await fetchEventTypes();
-
       setEventTypes(eventTypes);
-      setEvents(data);
+      setEvents(eventData);
     } finally {
       setIsLoading(false);
     }
@@ -46,14 +46,13 @@ export default function Home() {
     setSearchQuery(e.target.value);
   };
 
-
   const handleEventTypeToggle = (eventTypeId) => {
     setSelectedEventTypes((prevSelectedEventTypes) => {
       if (prevSelectedEventTypes.includes(eventTypeId)) {
-        // Remove the event type if it's already selected
+        // Remove the event
         return prevSelectedEventTypes.filter((id) => id !== eventTypeId);
       } else {
-        // Add the event type if it's not selected
+        // Add the event
         return [...prevSelectedEventTypes, eventTypeId];
       }
     });
@@ -75,25 +74,21 @@ export default function Home() {
       );
     })
     .sort((eventA, eventB) => {
-      // Check if event type is in user preferences
       const isInUserPreferences = (eventType) =>
         userData?.eventTypeIds?.includes(eventType);
 
-      // Get event types of eventA and eventB
       const eventTypeA = eventA.eventType?.name;
       const eventTypeB = eventB.eventType?.name;
 
-      // Check if event type is in user preferences for both events
       const isInUserPreferencesA = isInUserPreferences(eventTypeA);
       const isInUserPreferencesB = isInUserPreferences(eventTypeB);
 
-      // Sort events based on user preferences
       if (isInUserPreferencesA && !isInUserPreferencesB) {
-        return -1; // eventA comes first
+        return -1;
       } else if (!isInUserPreferencesA && isInUserPreferencesB) {
-        return 1; // eventB comes first
+        return 1; 
       } else {
-        return 0; // maintain the current order
+        return 0; 
       }
     });
 

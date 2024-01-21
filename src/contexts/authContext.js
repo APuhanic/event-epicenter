@@ -13,14 +13,17 @@ export const AuthProvider = ({ children }) => {
   const storedUserID =
     typeof localStorage !== "undefined" ? localStorage.getItem("userID") : null;
   const [userToken, setUserToken] = useState(storedToken);
-  const [isLoading, setIsLoading] = useState(true);
+
   const [userID, setUserID] = useState(storedUserID);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const isTokenExpired = (token) => {
     if (!token || token == "null") {
       return true;
     }
     console.log("token", token);
+    console.log("id", userID);
     try {
       const decoded = jwt.decode(token);
       const currentTime = Math.floor(Date.now() / 1000);
@@ -33,8 +36,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    getUserIDFromLocalStorage();
+    getTokenFromLocalStorage();
     const storedToken = localStorage.getItem("userToken");
-
     if (isTokenExpired(storedToken)) {
       setUserToken(null);
     } else {
@@ -59,7 +63,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error during logout:", error);
     }
+
     setUserToken(null);
+    setUserID(null);
   };
 
   const getTokenFromLocalStorage = () => {
@@ -75,27 +81,28 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isLoggedIn = () => {
-    console.log(
-      "IS LOGGED IN: ",
-      (localStorage.getItem("userToken") &&
-        localStorage.getItem("userID")) != null
-    );
-
-    return (
-      (localStorage.getItem("userToken") &&
-        localStorage.getItem("userID")) != null
-    );
+    if (
+      getTokenFromLocalStorage() === "null" ||
+      getTokenFromLocalStorage() === null ||
+      getTokenFromLocalStorage() === undefined
+    ) {
+      return false;
+    }
+    return true;
   };
 
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
       localStorage.setItem("userToken", userToken);
+
+      console.log("userToken", userToken);
     }
   }, [userToken]);
 
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
       localStorage.setItem("userID", userID);
+      console.log("userID", userID);
     }
   }, [userID]);
 

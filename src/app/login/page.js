@@ -24,7 +24,6 @@ const Login = ({}) => {
       setEmailError("");
       setPasswordError("");
 
-      const temp = JSON.stringify({ email, password });
       const response = await fetch(LOGIN_ENDPOINT, {
         method: "POST",
         headers: {
@@ -34,19 +33,21 @@ const Login = ({}) => {
         body: JSON.stringify({ email, password }),
       });
       if (response.status == 400) {
-        const data = await response.text();
-        if (data == "INVALID_EMAIL") {
+        const responseMessage = await response.text();
+        if (responseMessage == "INVALID_EMAIL") {
           setEmailError("Nevažeća e-mail adresa");
         }
-        if (data == "INVALID_LOGIN_CREDENTIALS") {
+        if (responseMessage == "INVALID_LOGIN_CREDENTIALS") {
           setPasswordError("Neispravna lozinka");
         }
       }
 
       if (response.ok) {
         const data = await response.json();
+        setUserID(data.userId);// neradi????
         setUserToken(data.accessToken);
-        setUserID(data.userId);
+        localStorage.setItem("userID", data.userId); //temp fix, bad code
+
         router.replace("/profile");
       }
     } catch (error) {

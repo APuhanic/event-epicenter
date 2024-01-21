@@ -12,6 +12,7 @@ import { fetchEvents, fetchEventTypes } from "@/api/api";
 import AdminEventList from "@/components/admin/adminEventList";
 import LoadingSkeletonEventList from "@/components/loadingSkeletonEventList";
 import EventTypesManagment from "@/components/admin/eventTypesManagment";
+import { useRouter } from "next/navigation";
 
 const Admin = ({}) => {
   const [name, setName] = useState("");
@@ -29,21 +30,26 @@ const Admin = ({}) => {
   const [events, setEvents] = useState([]);
   const [eventTypes, setEventTypes] = useState([]);
 
-  const { getTokenFromLocalStorage } = useAuth();
+  const { getTokenFromLocalStorage, getUserIDFromLocalStorage } = useAuth();
   const userToken = getTokenFromLocalStorage();
 
   const [fillAllError, setFillAllError] = useState(false);
   const [isAddingEvents, setIsAddingEvent] = useState(false);
   const fileRef = useRef();
 
+  const router = useRouter();
+
   const handleImageAsFile = (e) => {
     setEventImage(e.target.files[0]);
   };
 
   useEffect(() => {
+    if (getUserIDFromLocalStorage() != "wv9BUhUcXJaEoW9swBHZo5XzNsl1") {
+      router.replace("/login");
+    }
     fetchData();
   }, []);
-  
+
   useEffect(() => {
     if (!isAddingEvents) {
       resetFields();
@@ -176,7 +182,9 @@ const Admin = ({}) => {
           className="bg-white p-12 my-8 rounded-lg w-4/5 border-none focus:border-none"
           style={eventCardStyle}
         >
-          <p className="text-black text-xl font-bold text-center">Dodavanje doagađaja</p>
+          <p className="text-black text-xl font-bold text-center">
+            Dodavanje doagađaja
+          </p>
 
           <div className="flex justify-between">
             <InputField

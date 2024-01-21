@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { detailsButtonStyle, eventCardStyle } from "../styles";
 import { useRouter } from "next/navigation";
 import { fetchUserData, fetchEventTypes, updateUser } from "@/api/api";
+import Link from "next/link";
 
 const Profile = ({}) => {
   const {
@@ -23,7 +24,6 @@ const Profile = ({}) => {
 
   const userID = getUserIDFromLocalStorage();
   const userToken = getTokenFromLocalStorage();
-
 
   useEffect(() => {
     if (isLoggedIn() == false) {
@@ -119,6 +119,13 @@ const Profile = ({}) => {
             >
               Odjava
             </button>
+            {getUserIDFromLocalStorage() == "wv9BUhUcXJaEoW9swBHZo5XzNsl1" &&
+              <button
+              className="bg-blue-500 text-white rounded-lg px-2 text-lg py-2 mr-4"
+              style={detailsButtonStyle}
+            >
+              <Link href="/admin">Upravljanje događajima</Link>
+            </button>}
           </div>
 
           <div className="flex flex-col justify-center mb-4">
