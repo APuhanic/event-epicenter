@@ -18,7 +18,6 @@ const AdminEvent = ({ event, onEventDelete }) => {
 
   const handleDeleteEvent = async () => {
     const responseStatus = await deleteEvent(event.id, userToken);
-    console.log("responseStatus", responseStatus);
     if (responseStatus == 200) {
       onEventDelete(event.id);
     }

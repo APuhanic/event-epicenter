@@ -69,7 +69,6 @@ const UserComment = ({ eventId, onCommentAdded }) => {
             style={eventCardStyle}
             onChange={(e) => {
               setMessage(e.target.value);
-              console.log(message);
             }}
             value={message}
           ></textarea>

@@ -28,7 +28,6 @@ export default function Home() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      console.log(isLoggedIn());
       if (isLoggedIn()) {
         const userData = await fetchUserData(getUserIDFromLocalStorage());
         setUserData(userData);

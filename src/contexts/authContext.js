@@ -95,14 +95,12 @@ export const AuthProvider = ({ children }) => {
     if (typeof localStorage !== "undefined") {
       localStorage.setItem("userToken", userToken);
 
-      console.log("userToken", userToken);
     }
   }, [userToken]);
 
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
       localStorage.setItem("userID", userID);
-      console.log("userID", userID);
     }
   }, [userID]);
 
